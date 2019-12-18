@@ -6,11 +6,8 @@ const onerror = require('koa-onerror');
 const bodyparser = require('koa-bodyparser');
 const logger = require('koa-logger');
 
-const user = require('./routes/test/test');
-
 const { loggerMiddleware } = require('./middlewares/logger');
 const { errorHandler, responseHandler } = require('./middlewares/response');
-
 
 // error handler
 onerror(app);
@@ -41,6 +38,7 @@ app.use(async (ctx, next) => {
 });
 
 // routes
+const user = require('./routes/test/test');
 app.use(user.routes(), user.allowedMethods());
 
 // Response

@@ -1,5 +1,6 @@
 // 引入用户表 SQL语句
 const controllers = require('../../mysql/test');
+const _message = require('../../lib/errorCode');
 
 // 创建用户 Object
 const test = {};
@@ -24,13 +25,14 @@ test.searchUserInformation = async (ctx, next) => {
  * @returns {Promise<void>}
  */
 test.insertUserInformation = async (ctx, next) => {
+    const { phone } = ctx.request.body;
     let status = true;
     await controllers.list().then(async result => {
         for (let item of result){
-            if (item.phone === ctx.request.body.phone){
+            if (item.phone === phone){
                 status = false;
-                ctx.message = '该手机号码已经被注册！';
-                ctx.result = null;
+                ctx.code = "1001";
+                ctx.message = _message["1001"];
                 await next();
                 return;
             }
@@ -41,7 +43,8 @@ test.insertUserInformation = async (ctx, next) => {
         if (result.affectedRows === 1){
             ctx.result = result.insertId;
         } else {
-            ctx.message = '创建用户失败！';
+            ctx.code = "1002";
+            ctx.message = _message["1002"];
             ctx.result = null;
         }
     });

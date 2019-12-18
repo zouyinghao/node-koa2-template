@@ -6,9 +6,9 @@ const responseHandler = ctx => {
     if (ctx.result !== undefined){
         ctx.type = 'json';
         ctx.body = {
-            code: 0,
+            code: !ctx.code ? 200 : ctx.code,
             message: !ctx.message||ctx.message==='Not Found' ? 'success' : ctx.message,
-            data: ctx.result
+            data: !ctx.result ? null : ctx.result
         };
     }
 };
@@ -16,7 +16,6 @@ const responseHandler = ctx => {
 // 这个中间件处理在其它中间件中出现的异常,我们在next()后面进行异常捕获，出现异常直接进入这个中间件进行处理
 const errorHandler = (ctx, next) => {
     return next().catch(err => {
-        console.log('----- err -----', err);
         if (err.code == null){
             logger.error(err.stack);
         }
